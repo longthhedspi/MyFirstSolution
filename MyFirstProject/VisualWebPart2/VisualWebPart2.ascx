@@ -9,7 +9,11 @@
 
 <SharePoint:CssRegistration ID="CssRegistration1" runat="server" Name="/_layouts/MyFirstProject/StyleSheet1.css" />
 
-<script src="http://ajax.microsoft.com/ajax/jquery/jquery-1.4.2.js" type="text/javascript"></script>
+<script
+  src="https://code.jquery.com/jquery-1.12.4.min.js"
+  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+  crossorigin="anonymous"></script>
+
 <script type="text/javascript">
     function pageLoad() {
         // Code to copy the gridview header with style
@@ -37,6 +41,13 @@
         // Put it on top
         //$('#headerDiv').css('top', '-10');
     }
+
+    function checkAllVB(checkbox) {
+        var GridViewElement = document.getElementById("<%=GridView1.ClientID %>");
+        for (i = 1; i < GridViewElement.rows.length; i++) {
+            GridViewElement.rows[i].cells[0].getElementsByTagName("INPUT")[0].checked = checkbox.checked;
+        }
+    }
 </script>
 
 
@@ -48,12 +59,12 @@
                     <RootNodeStyle ImageUrl="/_layouts/images/MyFirstProject/folder_icon.png" HorizontalPadding="5px" />
                     <LeafNodeStyle ImageUrl="/_layouts/images/MyFirstProject/file_icon.png" HorizontalPadding="5px" />
                     <Nodes>
-                        <asp:TreeNode Expanded="False" Text="Đơn vị đến" Value="donvinhap" SelectAction="None">
+                        <asp:TreeNode Expanded="False" Text="Đơn vị đến" Value="1" SelectAction="None">
                             <asp:TreeNode Text="BỘ KẾ HOẠCH VÀ ĐẦU TƯ" Value="1"></asp:TreeNode>
                             <asp:TreeNode Text="Lớp học" Value="2"></asp:TreeNode>
                             <asp:TreeNode Text="Trung tâm Tin học" Value="3"></asp:TreeNode>
                         </asp:TreeNode>
-                        <asp:TreeNode Expanded="False" Text="Tính chất văn bản" Value="khan" SelectAction="None">
+                        <asp:TreeNode Expanded="False" Text="Tính chất văn bản" Value="2" SelectAction="None">
                             <asp:TreeNode Text="Thường" Value="8"></asp:TreeNode>
                             <asp:TreeNode Text="Hoả tốc" Value="9"></asp:TreeNode>
                             <asp:TreeNode Text="Khẩn" Value="10"></asp:TreeNode>
@@ -71,6 +82,21 @@
                         BackColor="#FFFFFF" ForeColor="Black" GridLines="None">
                         <AlternatingRowStyle BackColor="#EEEEEE" />
                         <Columns>
+                            <asp:TemplateField>
+                                <HeaderTemplate>
+                                    <asp:CheckBox ID="checkAllVB" runat="server" onclick="checkAllVB(this);" CssClass="bigCheckBox" />
+                                </HeaderTemplate>
+                                <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                <ItemTemplate>
+                                    <asp:CheckBox ID="checkVB" runat="server" CssClass="bigCheckBox" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <asp:LinkButton ID="btnShowPopup" runat="server" Text="Show"/>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:BoundField DataField="intiddonvinhap" HeaderText="iddonvi" SortExpression="intiddonvinhap" />
                             <asp:BoundField DataField="strngayden" DataFormatString="{0:dd/MM/yyyy}" HeaderText="Ngày đến" SortExpression="strngayden" ItemStyle-HorizontalAlign="Center" />
                             <asp:BoundField DataField="intsoden" HeaderText="Số đến" SortExpression="intsoden" ItemStyle-HorizontalAlign="Center" />
                             <asp:BoundField DataField="strnoigui" HeaderText="Nơi gửi" SortExpression="strnoigui" />

@@ -58,6 +58,11 @@
     border: 1px solid #CDCDCD;
 }
 
+.bigCheckBox input {
+    width:20px; 
+    height:20px;
+}
+
 #tableFooterDiv {
     min-height: 20px;
     padding: 6px;

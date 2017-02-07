@@ -22,15 +22,37 @@ namespace MyFirstProject
     }
     class CongvandenDAL
     {
-        public static List<Congvanden> GetCongvandens(int pageIndex, int pageSize, out int totalRows, int intiddonvinhap = 0, int intkhan = 0)
+        public static List<Congvanden> GetCongvandens(string userName, int pageIndex, int pageSize, out int totalRows, int bittrangthai = 0, int filterData = 0)
         {
             List<Congvanden> listCongVandens = new List<Congvanden>();
             string CS = ConfigurationManager.ConnectionStrings["NetOffice2013_VPCPConnectionString"].ConnectionString;
+            int intiddonvinhap = 0;
+            int intkhan = 0;
+
+            // Filter theo bittrangthai:
+            // 1: Don vi nhap
+            // 2: Tinh chat van ban
+            switch (bittrangthai)
+            {
+                case 1:
+                    intiddonvinhap = filterData;
+                    break;
+                case 2:
+                    intkhan = filterData;
+                    break;
+                default:
+                    break;
+            }
 
             using (SqlConnection con = new SqlConnection(CS))
             {
                 SqlCommand cmd = new SqlCommand("SP_Congvanden_by_PageIndex_and_PageSize", con);
                 cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlParameter paramUserName = new SqlParameter();
+                paramUserName.ParameterName = "@strtaikhoan";
+                paramUserName.Value = userName;
+                cmd.Parameters.Add(paramUserName);
 
                 SqlParameter paramStartIndex = new SqlParameter();
                 paramStartIndex.ParameterName = "@PageIndex";
@@ -47,7 +69,7 @@ namespace MyFirstProject
                 paramOutputTotalRows.Direction = ParameterDirection.Output;
                 paramOutputTotalRows.SqlDbType = SqlDbType.Int;
                 cmd.Parameters.Add(paramOutputTotalRows);
-
+                
                 SqlParameter paramIntiddonvinhap = new SqlParameter();
                 paramIntiddonvinhap.ParameterName = "@intiddonvinhap";
                 paramIntiddonvinhap.Value = intiddonvinhap;
@@ -80,7 +102,6 @@ namespace MyFirstProject
                     cvd.intiddonvinhap = (intiddonvinhapValue == DBNull.Value) ? 0 : Convert.ToInt32(intiddonvinhapValue);
                     var intkhanValue = rdr["intkhan"];
                     cvd.intkhan = (intkhanValue == DBNull.Value) ? 0 : Convert.ToInt32(intkhanValue);
-
 
                     listCongVandens.Add(cvd);
                 }

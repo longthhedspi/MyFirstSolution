@@ -63,26 +63,23 @@ namespace MyFirstProject.VisualWebPart2
 
         private List<Congvanden> GetDataWithFilters(int pageIndex, int pageSize, out int totalRows)
         {
-            int selectedValue;
-            if (int.TryParse(TreeView1.SelectedValue, out selectedValue))
-            {
-                if (TreeView1.SelectedNode.Parent.Value == "donvinhap")
-                    return CongvandenDAL.
-                        GetCongvandens(pageIndex, pageSize, out totalRows, selectedValue, 0);
-                else if (TreeView1.SelectedNode.Parent.Value == "khan")
-                    return CongvandenDAL.
-                        GetCongvandens(pageIndex, pageSize, out totalRows, 0, selectedValue);
-                else
-                    return CongvandenDAL.
-                        GetCongvandens(pageIndex, pageSize, out totalRows);
+            int selectedTreeViewValue;
+            //string userName = SPContext.Current.Web.CurrentUser.LoginName;
+            string userName = "nhuson";
 
-            } else
+
+            if (int.TryParse(TreeView1.SelectedValue, out selectedTreeViewValue))
             {
                 return CongvandenDAL.
-                    GetCongvandens(pageIndex, pageSize, out totalRows);
+                        GetCongvandens(userName, pageIndex, pageSize, out totalRows, int.Parse(TreeView1.SelectedNode.Parent.Value), selectedTreeViewValue);
+            }
+            else
+            {
+                return CongvandenDAL.
+                    GetCongvandens(userName, pageIndex, pageSize, out totalRows);
             }
 
-            
+
         }
 
         private void DatabindRepeater(int pageIndex, int pageSize, int totalRows)
@@ -125,6 +122,6 @@ namespace MyFirstProject.VisualWebPart2
         {
             MakeTable(0);
         }
-
+ 
     }
 }
