@@ -1,0 +1,48 @@
+﻿.ms-dialog #s4-ribbonrow,
+.ms-dialog .ms-cui-topBar2,
+.ms-dialog .s4-notdlg,
+.ms-dialog .s4-pr s4-ribbonrowhidetitle,
+.ms-dialog .s4-notdlg noindex,
+.ms-dialog #ms-cui-ribbonTopBars,
+.ms-dialog #s4-titlerow,
+.ms-dialog #s4-pr s4-notdlg s4-titlerowhidetitle,
+.ms-dialog #s4-leftpanel-content {
+    display: none !important;
+}
+
+.ms-dialog .s4-ca {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.ms-dialog .ms-bodyareacell {
+    padding: 0px;
+}
+
+/*.ms-dialog .ms-bodyareacell td {
+    padding: 0px;
+}*/
+
+#s4-workspace {
+
+   overflow-y: auto !important;
+
+   overflow-x: auto !important;
+
+}
+    #s4-workspace::-webkit-scrollbar {
+        width: 1em;
+    }
+
+    #s4-workspace::-webkit-scrollbar-track {
+        background-color: #FFFFFF;
+        border-radius: 25px;
+    }
+
+    #s4-workspace::-webkit-scrollbar-thumb {
+        background-color: #C2C2C2;
+        border-radius: 25px;
+    }
+
+
+

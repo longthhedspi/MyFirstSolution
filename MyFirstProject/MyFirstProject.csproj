@@ -56,6 +56,14 @@
   <ItemGroup>
     <Compile Include="CongvandenDAL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VBDenDetails\VBDenDetails.ascx.cs">
+      <DependentUpon>VBDenDetails.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="VBDenDetails\VBDenDetails.ascx.g.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VBDenDetails.ascx</DependentUpon>
+    </Compile>
     <Compile Include="VisualWebPart2\VisualWebPart2.ascx.cs">
       <DependentUpon>VisualWebPart2.ascx</DependentUpon>
     </Compile>
@@ -83,10 +91,16 @@
     <None Include="Package\Package.Template.xml">
       <DependentUpon>Package.package</DependentUpon>
     </None>
+    <None Include="VBDenDetails\SharePointProjectItem.spdata">
+      <SharePointProjectItemId>{dbce0a44-c454-4e7c-bcf4-0f5f6e230868}</SharePointProjectItemId>
+    </None>
+    <None Include="VBDenDetails\VBDenDetails.webpart" />
     <None Include="VisualWebPart2\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{261f3e7b-97b2-460e-860d-cc90b6ad095d}</SharePointProjectItemId>
     </None>
-    <None Include="VisualWebPart2\VisualWebPart2.webpart" />
+    <None Include="VisualWebPart2\VisualWebPart2.webpart">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
@@ -97,7 +111,14 @@
     </Content>
     <Content Include="Images\MyFirstProject\file_icon.png" />
     <Content Include="Images\MyFirstProject\folder_icon.png" />
+    <Content Include="Images\MyFirstProject\printer_icon.png" />
     <Content Include="Layouts\MyFirstProject\StyleSheet1.css" />
+    <Content Include="Layouts\MyFirstProject\StyleSheet2.css" />
+    <Content Include="VBDenDetails\Elements.xml" />
+    <Content Include="VBDenDetails\VBDenDetails.ascx">
+      <Generator>SharePointWebPartCodeGenerator</Generator>
+      <LastGenOutput>VBDenDetails.ascx.g.cs</LastGenOutput>
+    </Content>
     <Content Include="VisualWebPart2\Elements.xml" />
     <Content Include="VisualWebPart2\VisualWebPart2.ascx">
       <Generator>SharePointWebPartCodeGenerator</Generator>

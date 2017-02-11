@@ -42,6 +42,10 @@
         border-radius: 25px;
     }
 
+.hiddenCol {
+    display: none;
+}
+
 .gridview td {
     padding: 4px;
 }

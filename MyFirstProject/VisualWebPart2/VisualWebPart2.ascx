@@ -7,39 +7,64 @@
 <%@ Register TagPrefix="WebPartPages" Namespace="Microsoft.SharePoint.WebPartPages" Assembly="Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="VisualWebPart2.ascx.cs" Inherits="MyFirstProject.VisualWebPart2.VisualWebPart2" %>
 
-<SharePoint:CssRegistration ID="CssRegistration1" runat="server" Name="/_layouts/MyFirstProject/StyleSheet1.css" />
+<SharePoint:CssRegistration ID="CssRegistration1" runat="server" Name="/_layouts/MyFirstProject/StyleSheet1.css" After="corev4.css" />
 
-<script
-  src="https://code.jquery.com/jquery-1.12.4.min.js"
-  integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
-  crossorigin="anonymous"></script>
+<%--Wrap the javascript insinde a Placeholder server control to fix the "can't add control duo to <%...%> block" error--%>
+<asp:PlaceHolder runat="server">
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        function pageLoad() {
+            fixedHeader();
+            recoverScrollValue();
+            saveScrollValue();
+        }
 
-<script type="text/javascript">
-    function pageLoad() {
-        // Code to copy the gridview header with style
-        var gridHeader = $('#<%= GridView1.ClientID%>').clone(true).attr('id', 'clonedGrid');
-        //Code to remove all rows except the header row
-        $(gridHeader).find("tr:gt(0)").remove();
-        $('#<%= GridView1.ClientID%> tr th').each(function (i) {
-            //Dealing with annoyinng JQuery's Chrome bug
-            var headerWidth = $(this).width();
-            var isChrome = !!window.chrome && !!window.chrome.webstore;
-            if (isChrome) {
-                headerWidth += parseInt($(this).css('border-left-width'), 10);
-            }
-            // Here Set Width of each th from gridview to new table th
-            $("th:nth-child(" + (i + 1) + ")", gridHeader).css('width', headerWidth.toString() + "px");
-            // Here Set height of each th from gridview to new table th
-            $("th:nth-child(" + (i + 1) + ")", gridHeader).css('height', ($(this).height()).toString() + "px");
-        });
-        // Append Header to the div controlHead
+        function fixedHeader() {
+            // Code to copy the gridview header with style
+            var gridHeader = $('#<%= GridView1.ClientID%>').clone(true).attr('id', 'clonedGrid');
+            //Code to remove all rows except the header row
+            $(gridHeader).find("tr:gt(0)").remove();
+            $('#<%= GridView1.ClientID%> tr th').each(function (i) {
+                //Dealing with annoyinng JQuery's Chrome bug            
+                var headerWidth = $(this).width();
+                var isChrome = !!window.chrome && !!window.chrome.webstore;
+                if (isChrome) {
+                    headerWidth += parseInt($(this).css('border-left-width'), 10);
+                }
+                // Here Set Width of each th from gridview to new table th
+                $("th:nth-child(" + (i + 1) + ")", gridHeader).css('width', headerWidth.toString() + "px");
+                // Here Set height of each th from gridview to new table th
+                $("th:nth-child(" + (i + 1) + ")", gridHeader).css('height', ($(this).height()).toString() + "px");
+            });
+            // Append Header to the div controlHead
         $("#headerDiv").append(gridHeader);
-        // Set its position to be fixed
+            // Set its position to be fixed
         $('#headerDiv').css('position', 'absolute');
-        // Bring the header in front of everything else
+            // Bring the header in front of everything else
         $('#headerDiv').css('z-index', '200');
-        // Put it on top
-        //$('#headerDiv').css('top', '-10');
+            // Put it on top
+            //$('#headerDiv').css('top', '-10');
+    }
+
+    function recoverScrollValue() {
+        var divObj = $("#gridViewDiv");
+        var hdnObj = $("#<%= HdnScrollTop.ClientID %>");
+        var hdnCheck = $("#<%= HdnSaveScrollTopCheck.ClientID %>");
+        if (hdnCheck.val() == 1) {
+            divObj.scrollTop(hdnObj.val());
+            hdnCheck.val(0);
+        } else {
+            hdnObj.val(0);
+        }
+    }
+
+    function saveScrollValue() {
+        var divObj = $("#gridViewDiv");
+        var hdnObj = $("#<%= HdnScrollTop.ClientID %>");
+        divObj.scroll(function () {
+            console.log("scroll");
+            hdnObj.val($(this).scrollTop());
+        });
     }
 
     function checkAllVB(checkbox) {
@@ -48,8 +73,25 @@
             GridViewElement.rows[i].cells[0].getElementsByTagName("INPUT")[0].checked = checkbox.checked;
         }
     }
-</script>
 
+    function showDetailsDialog(dialogUrl, dialogTitle) {
+        var hdnCheck = $("#<%= HdnSaveScrollTopCheck.ClientID %>");
+        hdnCheck.val(1);
+        var options = {
+            url: dialogUrl,
+            title: dialogTitle,
+            showMaximized: true,
+            dialogReturnValueCallback: dialogCallBack
+        };
+        SP.UI.ModalDialog.showModalDialog(options);
+    }
+
+    function dialogCallBack(dialogResult, returnValue) {
+        //alert(dialogResult.toString);
+        //SP.UI.ModalDialog.RefreshPage(SP.UI.DialogResult.OK);
+    };
+    </script>
+</asp:PlaceHolder>
 
 <asp:UpdatePanel ID="UpdatePanel1" runat="server">
     <ContentTemplate>
@@ -78,10 +120,12 @@
                 <div id="gridViewDiv">
                     <asp:GridView ID="GridView1" runat="server"
                         CssClass="gridview"
+                        OnRowDataBound="GridView1_RowDataBound"
                         AllowPaging="true" PageSize="50" AutoGenerateColumns="false"
                         BackColor="#FFFFFF" ForeColor="Black" GridLines="None">
                         <AlternatingRowStyle BackColor="#EEEEEE" />
                         <Columns>
+                            <asp:BoundField DataField="intid" HeaderText="ID"/>
                             <asp:TemplateField>
                                 <HeaderTemplate>
                                     <asp:CheckBox ID="checkAllVB" runat="server" onclick="checkAllVB(this);" CssClass="bigCheckBox" />
@@ -93,7 +137,7 @@
                             </asp:TemplateField>
                             <asp:TemplateField>
                                 <ItemTemplate>
-                                    <asp:LinkButton ID="btnShowPopup" runat="server" Text="Show"/>
+                                    <asp:LinkButton ID="btnShowDetails" runat="server" Text="Show" OnClick="btnShowDetails_Click" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:BoundField DataField="intiddonvinhap" HeaderText="iddonvi" SortExpression="intiddonvinhap" />
@@ -132,5 +176,10 @@
                 </div>
             </div>
         </div>
+        <p>
+            <asp:Label ID="Label1" runat="server"></asp:Label>
+        </p>
+        <asp:HiddenField ID="HdnScrollTop" runat="server" Value="0" />
+        <asp:HiddenField ID="HdnSaveScrollTopCheck" runat="server" Value="0" />
     </ContentTemplate>
 </asp:UpdatePanel>

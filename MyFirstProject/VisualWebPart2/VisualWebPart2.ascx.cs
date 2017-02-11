@@ -19,8 +19,6 @@ namespace MyFirstProject.VisualWebPart2
         // your constructor, it's not recommended for production purposes.
         // [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode = true)]
 
-        //Label lblDebug = new Label();
-
         public VisualWebPart2()
         {
         }
@@ -33,16 +31,7 @@ namespace MyFirstProject.VisualWebPart2
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //lblDebug.BorderStyle = BorderStyle.Solid;
-            //this.Controls.Add(lblDebug);
             if (GridView1.Rows.Count == 0) MakeTable(0);
-        }
-
-        protected void linkButton_Click(object sender, EventArgs e)
-        {
-            int pageIndex = int.Parse((sender as LinkButton).CommandArgument);
-            pageIndex -= 1;
-            MakeTable(pageIndex);
         }
 
         private void MakeTable(int pageIndex)
@@ -64,9 +53,7 @@ namespace MyFirstProject.VisualWebPart2
         private List<Congvanden> GetDataWithFilters(int pageIndex, int pageSize, out int totalRows)
         {
             int selectedTreeViewValue;
-            //string userName = SPContext.Current.Web.CurrentUser.LoginName;
-            string userName = "nhuson";
-
+            string userName = SPContext.Current.Web.CurrentUser.LoginName;
 
             if (int.TryParse(TreeView1.SelectedValue, out selectedTreeViewValue))
             {
@@ -122,6 +109,30 @@ namespace MyFirstProject.VisualWebPart2
         {
             MakeTable(0);
         }
- 
+        protected void linkButton_Click(object sender, EventArgs e)
+        {
+            int pageIndex = int.Parse((sender as LinkButton).CommandArgument);
+            pageIndex -= 1;
+            MakeTable(pageIndex);
+        }
+
+        protected void btnShowDetails_Click(object sender, EventArgs e)
+        {
+            LinkButton btn = (LinkButton)sender;
+            GridViewRow row = (GridViewRow)btn.NamingContainer;
+            int intid = Convert.ToInt32(row.Cells[0].Text);
+            //Page.Session["VBDetailsID"] = intid;
+            Page.Session["VBDetailsID"] = 22695;
+            //string dialogUrl = SPContext.Current.Site.ServerRelativeUrl	 + @"/SiteAssets/ShowVBDen.aspx";
+            string dialogUrl = @"/sites/dev1/SiteAssets/ShowVBDen.aspx";
+            string dialogTitle = @"Chi tiết công văn đến";
+            string scriptContent = @"showDetailsDialog('" + dialogUrl + @"', '" + dialogTitle + @"');";
+            ScriptManager.RegisterStartupScript(UpdatePanel1, UpdatePanel1.GetType(), "showDetailsDialog", scriptContent, true);
+        }
+
+        protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            e.Row.Cells[0].Visible = false;
+        }
     }
 }
